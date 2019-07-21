@@ -25,25 +25,15 @@ icon = "{}/icon.png".format(path.dirname(__file__))
 google_icon = "{}/google.png".format(path.dirname(__file__))
 
 
-def getSubtitle(hit):
+def getSubtitles(hit):
     hierarchy = hit["hierarchy"]
 
-    if hierarchy["lvl2"] is not None:
-        return hierarchy["lvl2"]
+    subtitles = []
+    for x in range(2, 6):
+        if hierarchy["lvl" + str(x)] is not None:
+            subtitles.append(hierarchy["lvl" + str(x)])
 
-    if hierarchy["lvl3"] is not None:
-        return hierarchy["lvl3"]
-
-    if hierarchy["lvl4"] is not None:
-        return hierarchy["lvl4"]
-
-    if hierarchy["lvl5"] is not None:
-        return hierarchy["lvl5"]
-
-    if hierarchy["lvl6"] is not None:
-        return hierarchy["lvl6"]
-
-    return None
+    return subtitles
 
 
 def sortByLevel(el):
@@ -67,10 +57,11 @@ def handleQuery(query):
                 hits.sort(key=sortByLevel)
 
             for hit in hits:
-                subtitle = getSubtitle(hit)
 
-                if subtitle is not None:
-                    subtitle = "[{}] - {}".format(hit["hierarchy"]["lvl0"], subtitle)
+                if len(getSubtitles(hit)) is not 0:
+                    subtitle = "[{}] - {}".format(
+                        hit["hierarchy"]["lvl0"], " » ".join(getSubtitles(hit))
+                    )
                 else:
                     subtitle = "[{}]".format(hit["hierarchy"]["lvl0"])
 
